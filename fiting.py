@@ -16,12 +16,20 @@ def draw(W):
     plt.show()
 
 
+def opti(X, Y):
+    X_T = X.transpose()
+    XTX = np.dot(X_T, X)
+    oppo = np.linalg.inv(XTX)
+    XTY = np.dot(X_T, Y)
+    return np.dot(oppo, XTY)
+
+
 x = np.linspace(0, 1, num)
 X = np.linspace(1, 1, num)
 for i in range(m):
     X = np.vstack([X, x**(i+1)])
 X = X.transpose()
+print(X)
 Y = np.sin(x*2*np.pi) + np.random.normal(0, 0.1, (x.size,))  # 添加噪声的Y
-W = np.linspace(1, 1, m+1)  # 初始化W
-
+W = opti(X,Y)
 draw(W)
