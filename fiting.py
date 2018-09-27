@@ -4,23 +4,26 @@ import math
 import os
 m = 9  # 阶数
 num = 10  # 训练数据个数
-test_num = 100 #测试数据个数
+test_num = 100  # 测试数据个数
 l = math.e**(-8)
 
 
-def draw(A, B,X_test,Y_test, W,title):
+def draw(A, B, X_test, Y_test, W, title):
     X = np.linspace(0, 1, 100)
     plt.title(title)
-    lossing = loss(X_test,Y_test,W)
-    plt.text(-0.05,-1,"test data loss = " + str('%.5f'%lossing), fontsize = 8)
-    plt.text(-0.05,-1.2,"test data E_RMS = " + str('%.5f'%ERMS(lossing,test_num)), fontsize = 8)
+    lossing = loss(X_test, Y_test, W)
+    plt.text(-0.05, -1, "test data loss = " +
+             str('%.5f' % lossing), fontsize=8)
+    plt.text(-0.05, -1.2, "test data E_RMS = " + str('%.5f' %
+                                                     ERMS(lossing, test_num)), fontsize=8)
     plt.plot(X, answer(X, W), label="y = f(w,x)")
     plt.plot(X, np.sin(X*np.pi*2), label="y=sin(2x)")
     plt.scatter(A, B, color="red", s=15, label="train")
-    plt.scatter(X_test,Y_test, color = "green", s = 15, label = "test")
+    plt.scatter(X_test, Y_test, color="green", s=15, label="test")
     plt.legend()
 
-def opti(X, Y):
+
+def bf(X, Y):
     X_T = X.transpose()
     XTX = np.dot(X_T, X)
     oppo = np.linalg.inv(XTX)
@@ -28,7 +31,7 @@ def opti(X, Y):
     return np.dot(oppo, XTY)
 
 
-def opti_reg(X, Y):
+def bf_reg(X, Y):
     X_T = X.transpose()
     XTX = np.dot(X_T, X)
     oppo = np.linalg.inv(XTX+(np.eye(m+1))*l)
@@ -36,7 +39,24 @@ def opti_reg(X, Y):
     return np.dot(oppo, XTY)
 
 
-def loss(X_test,Y_test,W):
+def gradient(X, Y):
+    max_iters = 10000
+    step = 0.01
+    return 0
+
+
+def gradient_reg(X, Y):
+    max_iters = 10000
+    step = 0.01
+    return 0
+
+
+def gra(X, Y, W):
+    XT = X.transpose()
+    return np.dot(XT,Y)-np.dot(np.dot(XT,X),W)
+
+
+def loss(X_test, Y_test, W):
     X = np.linspace(1, 1, X_test.size)
     for i in range(m):
         X = np.vstack([X, X_test**(i+1)])
@@ -46,8 +66,9 @@ def loss(X_test,Y_test,W):
     return np.dot(L.transpose(), L)/2
 
 
-def ERMS(loss,num):
+def ERMS(loss, num):
     return np.sqrt(2*loss/num)
+
 
 def answer(x, W):
     X = np.linspace(1, 1, x.size)
@@ -57,13 +78,23 @@ def answer(x, W):
     return np.dot(X, W)
 
 
-def bestFit(X,Y,X_test,Y_test):
-    W = opti(X, Y)
-    W_reg = opti_reg(X,Y)
+def Gradient(X, Y, X_test, Y_test):
+    W = gradient(X, Y)
+    W_reg = gradient_reg(X, Y)
     plt.subplot(121)
-    draw(x, Y,X_test,Y_test, W, "Best fit without regular terms")
+    draw(x, Y, X_test, Y_test, W, "Best fit without regular terms")
     plt.subplot(122)
-    draw(x, Y,X_test, Y_test, W_reg, "Best fit with regular terms")
+    draw(x, Y, X_test, Y_test, W_reg, "Best fit with regular terms")
+    plt.show()
+
+
+def BestFit(X, Y, X_test, Y_test):
+    W = bf(X, Y)
+    W_reg = bf_reg(X, Y)
+    plt.subplot(121)
+    draw(x, Y, X_test, Y_test, W, "Best fit without regular terms")
+    plt.subplot(122)
+    draw(x, Y, X_test, Y_test, W_reg, "Best fit with regular terms")
     plt.show()
 
 
@@ -74,5 +105,5 @@ for i in range(m):
 X = X.transpose()
 Y = np.sin(x*2*np.pi) + np.random.normal(0, 0.1, (x.size,))  # 添加噪声的Y
 X_test = np.random.random_sample(test_num,)
-Y_test = np.sin(X_test*2*np.pi) + np.random.normal(0,0.1,test_num)
-bestFit(X,Y,X_test,Y_test)
+Y_test = np.sin(X_test*2*np.pi) + np.random.normal(0, 0.1, test_num)
+BestFit(X, Y, X_test, Y_test)
