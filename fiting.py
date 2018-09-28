@@ -3,8 +3,11 @@ import numpy as np
 import math
 import os
 m = 9  # 阶数
-num = 10  # 训练数据个数
+num = 100  # 训练数据个数
 test_num = 100  # 测试数据个数
+max_iters = 50000   #梯度下级最大迭代次数
+max_value = 0.0000001   #停止迭代条件
+step = 0.01         #梯度下级步长
 l = math.e**(-8)
 
 
@@ -40,20 +43,35 @@ def bf_reg(X, Y):
 
 
 def gradient(X, Y):
-    max_iters = 10000
-    step = 0.01
-    return 0
+    W = np.linspace(0,0,m+1)
+    iter = 0
+    g = gra(X,Y,W)
+    while((iter < max_iters)&(step*np.sqrt(np.dot(g.transpose(),g))>=max_value)):
+        W = W - step*g
+        g = gra(X,Y,W)
+        iter+=1
+    return W
 
 
 def gradient_reg(X, Y):
-    max_iters = 10000
-    step = 0.01
-    return 0
+    W = np.linspace(0,0,m+1)
+    iter = 0
+    g = gra_reg(X,Y,W)
+    while((iter < max_iters)&(step*np.sqrt(np.dot(g.transpose(),g))>=max_value)):
+        W = W - step*g
+        g = gra_reg(X,Y,W)
+        iter+=1
+    return W
 
 
 def gra(X, Y, W):
     XT = X.transpose()
-    return np.dot(XT,Y)-np.dot(np.dot(XT,X),W)
+    return np.dot(np.dot(XT,X),W)-np.dot(XT,Y)
+
+
+def gra_reg(X, Y, W):
+    XT = X.transpose()
+    return np.dot(np.dot(XT,X),W)-np.dot(XT,Y)+l*W
 
 
 def loss(X_test, Y_test, W):
@@ -82,9 +100,9 @@ def Gradient(X, Y, X_test, Y_test):
     W = gradient(X, Y)
     W_reg = gradient_reg(X, Y)
     plt.subplot(121)
-    draw(x, Y, X_test, Y_test, W, "Best fit without regular terms")
+    draw(x, Y, X_test, Y_test, W, "Gradient descent without regular terms")
     plt.subplot(122)
-    draw(x, Y, X_test, Y_test, W_reg, "Best fit with regular terms")
+    draw(x, Y, X_test, Y_test, W_reg, "Gradient descent fit with regular terms")
     plt.show()
 
 
@@ -107,3 +125,4 @@ Y = np.sin(x*2*np.pi) + np.random.normal(0, 0.1, (x.size,))  # 添加噪声的Y
 X_test = np.random.random_sample(test_num,)
 Y_test = np.sin(X_test*2*np.pi) + np.random.normal(0, 0.1, test_num)
 BestFit(X, Y, X_test, Y_test)
+Gradient(X, Y, X_test, Y_test)
