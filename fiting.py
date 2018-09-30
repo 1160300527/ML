@@ -16,10 +16,12 @@ def draw(A, B, X_test, Y_test, W, title):
     X = np.linspace(0, 1, 100)
     plt.title(title)
     lossing = loss(X_test, Y_test, W)
-    plt.text(-0.05, -1.2, "m:"+str(m)+"\ntrain num:" +
-             str(num)+"\ntest num:"+str(test_num) +
-             "\ntest data loss = " + str('%.5f' % lossing) +
-             "\ntest data E_RMS = " + str('%.5f' % ERMS(lossing, test_num)), fontsize=8)
+    plt.text(-0.05, -1.2, "m:"+str(m)+"\ntrain set:" +
+             str(num)+"\nvalidation set:"+str(test_num) +
+             "\ntrain set loss:" + str('%.5f' % loss(A, B, W)) +
+             "\ntrain set E_RMS:" + str('%.5f' % ERMS(loss(A, B, W), num)) +
+             "\nvalidation set loss = " + str('%.5f' % lossing) +
+             "\nvalidation set E_RMS = " + str('%.5f' % ERMS(lossing, test_num)), fontsize=8)
     plt.plot(X, answer(X, W), label="y = f(w,x)")
     plt.plot(X, np.sin(X*np.pi*2), label="y=sin(2x)")
     plt.scatter(A, B, color="red", s=15, label="train")
@@ -138,10 +140,12 @@ def Gradient(X, Y, X_test, Y_test):
     W_reg = gradient_reg(X, Y)
     plt.subplot(121)
     draw(x, Y, X_test, Y_test, W, "Gradient descent without regular terms")
-    plt.text(-0.05, -0.8, "step:"+str(step)+"\nmin exit loop:"+str(max_value)+"\nlambda:e^"+str(L), fontsize=8)
+    plt.text(-0.05, -0.6, "step:"+str(step)+"\nmin exit loop:" +
+             str(max_value)+"\nlambda:e^"+str(L), fontsize=8)
     plt.subplot(122)
     draw(x, Y, X_test, Y_test, W_reg, "Gradient descent fit with regular terms")
-    plt.text(-0.05, -0.8, "step:"+str(step)+"\nmin exit loop:"+str(max_value)+"\nlambda:e^"+str(L), fontsize=8)
+    plt.text(-0.05, -0.6, "step:"+str(step)+"\nmin exit loop:" +
+             str(max_value)+"\nlambda:e^"+str(L), fontsize=8)
     plt.show()
 
 
@@ -150,11 +154,12 @@ def Conjugate(X, Y, X_test, Y_test):
     W_reg = conjugate_reg(X, Y)
     plt.subplot(121)
     draw(x, Y, X_test, Y_test, W, "Conjugate gradient without regular terms")
-    plt.text(-0.05, -0.8, "min exit loop:"+str(max_value), fontsize=8)
+    plt.text(-0.05, -0.6, "min exit loop:"+str(max_value), fontsize=8)
     plt.subplot(122)
     draw(x, Y, X_test, Y_test, W_reg,
          "Conjugate gradient descent fit with regular terms")
-    plt.text(-0.05, -0.8, "min exit loop:"+str(max_value)+"\nlambda:e^"+str(L), fontsize=8)
+    plt.text(-0.05, -0.6, "min exit loop:"+str(max_value) +
+             "\nlambda:e^"+str(L), fontsize=8)
     plt.show()
 
 
@@ -165,7 +170,7 @@ def BestFit(X, Y, X_test, Y_test):
     draw(x, Y, X_test, Y_test, W, "Best fit without regular terms")
     plt.subplot(122)
     draw(x, Y, X_test, Y_test, W_reg, "Best fit with regular terms")
-    plt.text(-0.05, -0.8, "lambda:e^"+str(L), fontsize=8)
+    plt.text(-0.05, -0.6, "lambda:e^"+str(L), fontsize=8)
     plt.show()
 
 
